@@ -1,0 +1,38 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build-Windows:
+
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Build
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.x'
+    - name: Restore
+      run: $slnList = Get-ChildItem $foo.FullName -Recurse -Filter '*.sln'; foreach ($file in $slnList) {nuget restore $file.FullName}
+    - name: Build
+      run: $slnList = Get-ChildItem $foo.FullName -Recurse -Filter '*.sln'; foreach ($file in $slnList) {dotnet build $file.FullName}
+    - name: Test
+      run: $slnList = Get-ChildItem $foo.FullName -Recurse -Filter '*.sln'; foreach ($file in $slnList) {dotnet test $file.FullName}
+
+  build-Ubuntu:
+
+      runs-on: ubuntu-latest
+
+      steps:
+      - uses: actions/checkout@v2
+      - name: Build
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: '6.x'
+      - name: Restore
+        run: for f in $(find . -name "*.sln"); do dotnet restore $f; done
+      - name: Build
+        run: for f in $(find . -name "*.sln"); do dotnet build $f; done
+      - name: Test
+        run: for f in $(find . -name "*.sln"); do dotnet test $f; done
