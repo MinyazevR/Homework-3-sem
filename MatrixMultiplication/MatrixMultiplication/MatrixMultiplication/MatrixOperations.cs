@@ -12,13 +12,12 @@ public static class MatrixOperations
     /// <param name="firstMatrix">First matrix</param>
     /// <param name="secondMatrix">Second matrix</param>
     /// <returns>Result of multiplication</returns>
-    /// <exception cref="ArgumentException"></exception>
+    /// <exception cref="ArgumentException">When number of columns of the first matrix is not equal to the number of rows of the second</exception>
     public static int[,] StandartMultiply(int[,] firstMatrix, int[,] secondMatrix)
     {
         if (firstMatrix.GetLength(1) != secondMatrix.GetLength(0))
         {
-            var paramName = "the number of columns of the first matrix is not equal to the number of rows of the second";
-            throw new ArgumentException(paramName);
+            throw new ArgumentException("the number of columns of the first matrix is not equal to the number of rows of the second");
         }
 
         int[,] result = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
@@ -42,11 +41,11 @@ public static class MatrixOperations
     /// <param name="firstMatrix">First matrix</param>
     /// <param name="secondMatrix">Second matrix</param>
     /// <returns>Result of multiplication</returns>
+    /// <exception cref="ArgumentException">When number of columns of the first matrix is not equal to the number of rows of the second</exception>
     public static int[,] ParallelMultiply(int[,] firstMatrix, int[,] secondMatrix)
     {
         if (firstMatrix.GetLength(1) != secondMatrix.GetLength(0)) {
-            var paramName = "the number of columns of the first matrix is not equal to the number of rows of the second";
-            throw new ArgumentException(paramName);
+            throw new ArgumentException("the number of columns of the first matrix is not equal to the number of rows of the second");
         }
 
         int[,] result = new int[firstMatrix.GetLength(0), secondMatrix.GetLength(1)];
@@ -89,6 +88,7 @@ public static class MatrixOperations
     /// <param name="numberOfRows">Number of rows</param>
     /// <param name="numberOfColumns">Number of columns</param>
     /// <returns>Matrix of a given size</returns>
+    /// <exception cref="ArgumentOutOfRangeException">invalid value for the number of rows or columns</exception> 
     public static int[,] Generate(int numberOfRows, int numberOfColumns)
     {
         if (numberOfRows <= 0) {
