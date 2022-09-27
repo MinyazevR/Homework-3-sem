@@ -9,8 +9,8 @@ if (args.Length != 2)
 
 static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 {
-    var firstMatrix = MatrixOPerations.MatrixOperations.Generate(size, size);
-    var secondMatrix = MatrixOPerations.MatrixOperations.Generate(size, size);
+    var firstMatrix = MatrixOperations.MatrixOperations.Generate(size, size);
+    var secondMatrix = MatrixOperations.MatrixOperations.Generate(size, size);
     var stopWatch = new Stopwatch();
     var standardCalculations = new long[100];
     var parallelCalculations = new long[100];
@@ -18,13 +18,13 @@ static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
     {
         stopWatch.Reset();
         stopWatch.Start();
-        MatrixOPerations.MatrixOperations.StandartMultiply(firstMatrix, secondMatrix);
+        MatrixOperations.MatrixOperations.StandartMultiply(firstMatrix, secondMatrix);
         stopWatch.Stop();
         standardCalculations[i] = stopWatch.ElapsedMilliseconds;
 
         stopWatch.Reset();
         stopWatch.Start();
-        MatrixOPerations.MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
+        MatrixOperations.MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
         stopWatch.Stop();
         parallelCalculations[i] = stopWatch.ElapsedMilliseconds;
     }

@@ -1,5 +1,5 @@
 namespace MatrixMultiplicationTest;
-using MatrixOPerations;
+using MatrixOperations;
 
 public class MatrixMultiplicationTest
 {
@@ -18,10 +18,12 @@ public class MatrixMultiplicationTest
     };
 
     [Test]
-    public void ShouldExpectedArgumentOutOfRangeExceptiont()
+    public void ShouldExpectedArgumentOutOfRangeException()
     {
         Assert.Throws<ArgumentOutOfRangeException>(() => MatrixOperations.Generate(-1, 2));
         Assert.Throws<ArgumentOutOfRangeException>(() => MatrixOperations.Generate(2, -1));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MatrixOperations.Generate(1, 0));
+        Assert.Throws<ArgumentOutOfRangeException>(() => MatrixOperations.Generate(0, 1));
         Assert.Throws<ArgumentOutOfRangeException>(() => MatrixOperations.Generate(0, 0));
 
     }
@@ -54,5 +56,25 @@ public class MatrixMultiplicationTest
         MatrixOperations.PrintMatrix("..//..//..//resultMatrix.txt", result);
         var matrixFromFile = MatrixOperations.ReadMatrix("..//..//..//resultMatrix.txt");
         Assert.True(MatrixOperations.Equals(result, matrixFromFile));
+    }
+
+    [Test]
+    public void ShouldExpectedTrueOfAreEqualForEqualMatrices()
+    {
+        Assert.True(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { } }));
+        Assert.True(MatrixOperations.Equals(new int[,] { { }, { } }, new int[,] { { }, { } }));
+        Assert.True(MatrixOperations.Equals(new int[,] { { 0} }, new int[,] { { 0} }));
+        Assert.True(MatrixOperations.Equals(new int[,] { { 1}, { 1 } }, new int[,] { { 1}, { 1 } }));
+        Assert.True(MatrixOperations.Equals(new int[,] { { 1}, { 1 }, { 1} }, new int[,] { { 1}, { 1 }, { 1} }));
+    }
+
+    [Test]
+    public void ShouldExpectedFalseOfAreEqualForUnequalMatrices()
+    {
+        Assert.False(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { 0} }));
+        Assert.False(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { }, { } }));
+        Assert.False(MatrixOperations.Equals(new int[,] { { } }, new int[,] { }));
+        Assert.False(MatrixOperations.Equals(new int[,] { { 0 } }, new int[,] { { 0, 1 } }));
+        Assert.False(MatrixOperations.Equals(new int[,] { { 1 }, { 1 } }, new int[,] { { }, { } }));
     }
 }

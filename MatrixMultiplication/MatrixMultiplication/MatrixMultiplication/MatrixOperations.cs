@@ -1,4 +1,4 @@
-﻿namespace MatrixOPerations;
+﻿namespace MatrixOperations;
 using System.Threading;
 
 /// <summary>
@@ -32,6 +32,7 @@ public static class MatrixOperations
                 }
             }
         }
+
         return result;
     }
 
@@ -92,13 +93,11 @@ public static class MatrixOperations
     public static int[,] Generate(int numberOfRows, int numberOfColumns)
     {
         if (numberOfRows <= 0) {
-            var paramName = "invalid value for the number of rows";
-            throw new ArgumentOutOfRangeException(paramName);
+            throw new ArgumentOutOfRangeException("invalid value for the number of rows");
         }
 
         else if (numberOfColumns <= 0) {
-            var paramName = "invalid value for the number of columns";
-            throw new ArgumentOutOfRangeException(paramName);
+            throw new ArgumentOutOfRangeException("invalid value for the number of columns");
         }
 
         Random random = new();
