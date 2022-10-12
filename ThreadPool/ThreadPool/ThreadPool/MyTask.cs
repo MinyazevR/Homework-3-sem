@@ -80,6 +80,7 @@ public class MyTask<TResult> : IMyTask<TResult>
                 {
                     throw new AggregateException(exception);
                 }
+
                 return result!;
             }
 
