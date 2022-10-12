@@ -1,11 +1,15 @@
 ﻿using System.Linq;
 using System.Diagnostics;
-
 if (args.Length != 2)
 {
     Console.WriteLine("at the input, the program should receive two files");
     return;
 }
+
+var firstMatrix = MatrixOperations.MatrixOperations.ReadMatrix(args[0]);
+var secondMatrix = MatrixOperations.MatrixOperations.ReadMatrix(args[1]);
+var result = MatrixOperations.MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
+MatrixOperations.MatrixOperations.PrintMatrix("..//..//..//result.txt", result);
 
 static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 {
@@ -14,7 +18,8 @@ static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
     var stopWatch = new Stopwatch();
     var standardCalculations = new long[100];
     var parallelCalculations = new long[100];
-    for (int i = 0; i < 100; i++)
+    var numberOfIterations = 100;
+    for (int i = 0; i < numberOfIterations; i++)
     {
         stopWatch.Reset();
         stopWatch.Start();
@@ -32,7 +37,8 @@ static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
     return (standardCalculations, parallelCalculations);
 }
 
-var sizes = new int[] {};
+// тут должны быть размеры матриц, но уже все посчитано
+var sizes = new int[] {/*8, 16, 32, 64, 128, 256, 512, 1024*/};
 
 
 foreach (var size in sizes)

@@ -3,11 +3,6 @@ using MatrixOperations;
 
 public class MatrixMultiplicationTest
 {
-    [SetUp]
-    public void Setup()
-    {
-    }
-
     private static IEnumerable<TestCaseData> MatrixMultiplyCaseData() => new TestCaseData[]
         {
         new TestCaseData(new int[,] { { 1 }, { 2 } }, new int[,] { { 2, 1} }, new int[,] {{2, 1 }, {4,2 } }),
@@ -43,8 +38,11 @@ public class MatrixMultiplicationTest
     {
         var standartResult  = MatrixOperations.StandartMultiply(firstMatrix, secondMatrix);
         var parallelResult  = MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
-        Assert.True(MatrixOperations.Equals(answer, standartResult));
-        Assert.True(MatrixOperations.Equals(answer, parallelResult));
+        Assert.Multiple(() =>
+        {
+            Assert.That(MatrixOperations.Equals(answer, standartResult), Is.True);
+            Assert.That(MatrixOperations.Equals(answer, parallelResult), Is.True);
+        });
     }
 
     [Test]
@@ -55,26 +53,32 @@ public class MatrixMultiplicationTest
         var result = MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
         MatrixOperations.PrintMatrix("..//..//..//resultMatrix.txt", result);
         var matrixFromFile = MatrixOperations.ReadMatrix("..//..//..//resultMatrix.txt");
-        Assert.True(MatrixOperations.Equals(result, matrixFromFile));
+        Assert.That(MatrixOperations.Equals(result, matrixFromFile), Is.True);
     }
 
     [Test]
     public void ShouldExpectedTrueOfAreEqualForEqualMatrices()
     {
-        Assert.True(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { } }));
-        Assert.True(MatrixOperations.Equals(new int[,] { { }, { } }, new int[,] { { }, { } }));
-        Assert.True(MatrixOperations.Equals(new int[,] { { 0} }, new int[,] { { 0} }));
-        Assert.True(MatrixOperations.Equals(new int[,] { { 1}, { 1 } }, new int[,] { { 1}, { 1 } }));
-        Assert.True(MatrixOperations.Equals(new int[,] { { 1}, { 1 }, { 1} }, new int[,] { { 1}, { 1 }, { 1} }));
+        Assert.Multiple(() =>
+        {
+            Assert.That(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { } }), Is.True);
+            Assert.That(MatrixOperations.Equals(new int[,] { { }, { } }, new int[,] { { }, { } }), Is.True);
+            Assert.That(MatrixOperations.Equals(new int[,] { { 0 } }, new int[,] { { 0 } }), Is.True);
+            Assert.That(MatrixOperations.Equals(new int[,] { { 1 }, { 1 } }, new int[,] { { 1 }, { 1 } }), Is.True);
+            Assert.That(MatrixOperations.Equals(new int[,] { { 1 }, { 1 }, { 1 } }, new int[,] { { 1 }, { 1 }, { 1 } }), Is.True);
+        });
     }
 
     [Test]
     public void ShouldExpectedFalseOfAreEqualForUnequalMatrices()
     {
-        Assert.False(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { 0} }));
-        Assert.False(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { }, { } }));
-        Assert.False(MatrixOperations.Equals(new int[,] { { } }, new int[,] { }));
-        Assert.False(MatrixOperations.Equals(new int[,] { { 0 } }, new int[,] { { 0, 1 } }));
-        Assert.False(MatrixOperations.Equals(new int[,] { { 1 }, { 1 } }, new int[,] { { }, { } }));
+        Assert.Multiple(() =>
+        {
+            Assert.That(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { 0 } }), Is.False);
+            Assert.That(MatrixOperations.Equals(new int[,] { { } }, new int[,] { { }, { } }), Is.False);
+            Assert.That(MatrixOperations.Equals(new int[,] { { } }, new int[,] { }), Is.False);
+            Assert.That(MatrixOperations.Equals(new int[,] { { 0 } }, new int[,] { { 0, 1 } }), Is.False);
+            Assert.That(MatrixOperations.Equals(new int[,] { { 1 }, { 1 } }, new int[,] { { }, { } }), Is.False);
+        });
     }
 }

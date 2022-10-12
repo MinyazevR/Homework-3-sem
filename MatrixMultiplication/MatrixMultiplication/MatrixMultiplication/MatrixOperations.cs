@@ -1,4 +1,5 @@
 ﻿namespace MatrixOperations;
+
 using System.Threading;
 
 /// <summary>
@@ -45,7 +46,8 @@ public static class MatrixOperations
     /// <exception cref="ArgumentException">When number of columns of the first matrix is not equal to the number of rows of the second</exception>
     public static int[,] ParallelMultiply(int[,] firstMatrix, int[,] secondMatrix)
     {
-        if (firstMatrix.GetLength(1) != secondMatrix.GetLength(0)) {
+        if (firstMatrix.GetLength(1) != secondMatrix.GetLength(0))
+        {
             throw new ArgumentException("the number of columns of the first matrix is not equal to the number of rows of the second");
         }
 
@@ -153,7 +155,8 @@ public static class MatrixOperations
             }
             writer.Write($"{matrix[i, matrix.GetLength(1) - 1]}");
 
-            if (i != matrix.GetLength(0) - 1) {
+            if (i != matrix.GetLength(0) - 1)
+            {
                 writer.WriteLine();
             }
         }
