@@ -24,7 +24,7 @@ public class Tests
     {
         for (int i = 0; i < 10; i++)
         {
-            Assert.AreEqual(expectedValue, lazy.Get());
+            Assert.That(lazy.Get(), Is.EqualTo(expectedValue));
         }
     }
 
@@ -38,7 +38,7 @@ public class Tests
         for (int i = 0; i < 8; i++)
         {
             threads[i] = new Thread(() => {
-                Assert.AreEqual(1, lazy.Get());
+                Assert.That(lazy.Get(), Is.EqualTo(1));
             });
         }
 

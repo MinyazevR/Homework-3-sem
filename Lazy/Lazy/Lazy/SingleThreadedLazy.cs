@@ -17,8 +17,7 @@ public class SingleThreadedLazy<T> : Lazy<T>
         if (!isAlreadyCounted)
         {
             isAlreadyCounted = true;
-            var paramName = "";
-            value = func() ?? throw new ArgumentNullException(paramName);
+            value = func() ?? throw new ArgumentNullException();
         }
 
         return value!;
