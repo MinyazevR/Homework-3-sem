@@ -18,7 +18,7 @@ public class Tests
     {
         var pool = new MyThreadPool.MyThreadPool(1);
         pool.ShutDown();
-        Assert.That(pool.Source.Token.IsCancellationRequested, Is.EqualTo(true));
+        Assert.True(pool.Source.Token.IsCancellationRequested);
     }
 
     private static IEnumerable<TestCaseData> TestRemoveCaseData() => new TestCaseData[]
@@ -61,19 +61,19 @@ public class Tests
         MyThreadPool.MyThreadPool pool = new(numberOfThreads);
         var task = pool.Submit(() => 1);
         task = pool.Submit(() => 1);
-        Assert.That(numberOfThreads, Is.EqualTo(pool.CountOfThreads));
+        Assert.That(pool.CountOfThreads, Is.EqualTo(numberOfThreads));
         pool.ShutDown();
 
         numberOfThreads = 5;
         pool = new(numberOfThreads);
-        Assert.That(numberOfThreads, Is.EqualTo(pool.CountOfThreads));
+        Assert.That(pool.CountOfThreads, Is.EqualTo(numberOfThreads));
         pool.ShutDown();
 
         numberOfThreads = 100;
         pool = new(numberOfThreads);
         task = pool.Submit(() => 1);
         int a = task.Result;
-        Assert.That(numberOfThreads, Is.EqualTo(pool.CountOfThreads));
+        Assert.That(pool.CountOfThreads, Is.EqualTo(numberOfThreads));
         pool.ShutDown();
     }
 
@@ -116,12 +116,12 @@ public class Tests
         static int ReturnTwo(int lol) => 2;
         var continuation = task.ContinueWith(ReturnTwo);
         int result = 2;
-        Assert.That(result, Is.EqualTo(continuation.Result));
+        Assert.That(continuation.Result, Is.EqualTo(result));
 
         var continuationContinuation = continuation.ContinueWith((x) => x * x);
         result = 4;
 
-        Assert.That(result, Is.EqualTo(continuationContinuation.Result));
+        Assert.That(continuation.Result, Is.EqualTo(result));
         pool.ShutDown();
     }
 
