@@ -1,6 +1,4 @@
-﻿using System.Collections.Concurrent;
-
-namespace MyThreadPool;
+﻿namespace MyThreadPool;
 
 /// <summary>
 /// Class for implementing a thread pool
@@ -13,6 +11,9 @@ public class MyThreadPool : IDisposable
     // object for sending a cancellation signal to the CancellationToken token
     private readonly CancellationTokenSource source = new();
 
+    /// <summary>
+    /// Get CancellationTokenSource
+    /// </summary>
     public CancellationTokenSource Source => source;
 
     private bool disposed;
@@ -100,6 +101,9 @@ public class MyThreadPool : IDisposable
         }
     }
 
+    /// <summary>
+    /// Method for shutting down threads
+    /// </summary>
     public void ShutDown()
     {
         lock(queue)
@@ -144,17 +148,5 @@ public class MyThreadPool : IDisposable
     ~MyThreadPool()
     {
         Dispose(false);
-    }
-}
-
-public class Solution
-{
-    public static void Main()
-    {
-        var pool = new MyThreadPool(10);
-        int zero = 0;
-        var task = pool.Submit(() => 1 / zero);
-        int ReturnResult() => task.Result;
-        ReturnResult();
     }
 }

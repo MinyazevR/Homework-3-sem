@@ -7,7 +7,7 @@ public class Tests
     public void ShouldOperationCanceledExceptionWhenShutDownIfTaskHasNotStart()
     {
         var pool = new MyThreadPool.MyThreadPool(1);
-        var task = pool.Submit(() => { Thread.Sleep(10); return 1; });
+        var task = pool.Submit(() => { Thread.Sleep(100); return 1; });
         pool.ShutDown();
         int ReturnResult() => task.Result;
         Assert.Throws<OperationCanceledException>(() => ReturnResult());
