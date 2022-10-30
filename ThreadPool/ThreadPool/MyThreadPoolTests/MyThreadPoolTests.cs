@@ -8,8 +8,10 @@ public class Tests
     {
         var pool = new MyThreadPool.MyThreadPool(1);
         var task = pool.Submit(() => { Thread.Sleep(100); return 1; });
+        static int ReturnTwo(int lol) => 2;
+        var continuation = task.ContinueWith(ReturnTwo);
         pool.ShutDown();
-        int ReturnResult() => task.Result;
+        int ReturnResult() => continuation.Result;
         Assert.Throws<OperationCanceledException>(() => ReturnResult());
     }
 
