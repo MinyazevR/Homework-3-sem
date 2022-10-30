@@ -7,7 +7,7 @@ public class Tests
     public void ShouldOperationCanceledExceptionWhenShutDownIfTaskHasNotStart()
     {
         var pool = new MyThreadPool.MyThreadPool(1);
-        var task = pool.Submit(() => 1);
+        var task = pool.Submit(() => { Thread.Sleep(10); return 1; });
         pool.ShutDown();
         int ReturnResult() => task.Result;
         Assert.Throws<OperationCanceledException>(() => ReturnResult());
@@ -121,7 +121,8 @@ public class Tests
         var continuationContinuation = continuation.ContinueWith((x) => x * x);
         result = 4;
 
-        Assert.That(continuation.Result, Is.EqualTo(result));
+        Thread.Sleep(10);
+        Assert.That(continuationContinuation.Result, Is.EqualTo(result));
         pool.ShutDown();
     }
 
