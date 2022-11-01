@@ -72,8 +72,8 @@ public class MatrixMultiplicationTest
     [Test]
     public void ShouldExpectedTrueOfComparsionForMatrixBeforeAndAfterPrintMatrix()
     {
-        var firstMatrix = Matrix.ReadMatrix("firstMatrix.txt");
-        var secondMatrix = Matrix.ReadMatrix("secondMatrix.txt");
+        var firstMatrix = Matrix.ReadMatrix("..//..//..//firstMatrix.txt");
+        var secondMatrix = Matrix.ReadMatrix("..//..//..//secondMatrix.txt");
         var result = firstMatrix.Multiply(secondMatrix, parallelStrategy);
         result.PrintMatrix("resultMatrix.txt");
         var matrixFromFile = Matrix.ReadMatrix("resultMatrix.txt");
