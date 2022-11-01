@@ -27,6 +27,10 @@ public class Matrix
         set => data[i, j] = value;
     }
 
+    /// <summary>
+    /// Two-dimensional array for matrix initialization
+    /// </summary>
+    /// <param name="data"></param>
     public Matrix(int[,] data)
     {
         this.data = data;
