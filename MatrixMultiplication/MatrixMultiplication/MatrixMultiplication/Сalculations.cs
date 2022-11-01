@@ -1,35 +1,37 @@
-﻿using System.Linq;
-using System.Diagnostics;
-if (args.Length != 2)
+﻿using System.Diagnostics;
+
+/*if (args.Length != 2)
 {
     Console.WriteLine("at the input, the program should receive two files");
     return;
 }
 
-var firstMatrix = MatrixOperations.MatrixOperations.ReadMatrix(args[0]);
-var secondMatrix = MatrixOperations.MatrixOperations.ReadMatrix(args[1]);
-var result = MatrixOperations.MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
-MatrixOperations.MatrixOperations.PrintMatrix("..//..//..//result.txt", result);
+var firstMatrix = MatrixMultiplication.Matrix.ReadMatrix(args[0]);
+var secondMatrix = MatrixMultiplication.Matrix.ReadMatrix(args[1]);
+var result = firstMatrix.Multiply(secondMatrix, new MatrixMultiplication.ParallelStrategy());
+result.PrintMatrix("result.txt");*/
 
 static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 {
-    var firstMatrix = MatrixOperations.MatrixOperations.Generate(size, size);
-    var secondMatrix = MatrixOperations.MatrixOperations.Generate(size, size);
+    var firstMatrix = MatrixMultiplication.Matrix.Generate(size, size);
+    var secondMatrix = MatrixMultiplication.Matrix.Generate(size, size);
     var stopWatch = new Stopwatch();
-    var standardCalculations = new long[100];
-    var parallelCalculations = new long[100];
     var numberOfIterations = 100;
+    var standardCalculations = new long[numberOfIterations];
+    var parallelCalculations = new long[numberOfIterations];
+    var sequentialStrategy = new MatrixMultiplication.SequentialStrategy();
+    var parallelStrategy = new MatrixMultiplication.ParallelStrategy();
     for (int i = 0; i < numberOfIterations; i++)
     {
         stopWatch.Reset();
         stopWatch.Start();
-        MatrixOperations.MatrixOperations.StandartMultiply(firstMatrix, secondMatrix);
+        firstMatrix.Multiply(secondMatrix, sequentialStrategy);
         stopWatch.Stop();
         standardCalculations[i] = stopWatch.ElapsedMilliseconds;
 
         stopWatch.Reset();
         stopWatch.Start();
-        MatrixOperations.MatrixOperations.ParallelMultiply(firstMatrix, secondMatrix);
+        firstMatrix.Multiply(secondMatrix, parallelStrategy);
         stopWatch.Stop();
         parallelCalculations[i] = stopWatch.ElapsedMilliseconds;
     }
@@ -38,8 +40,7 @@ static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 }
 
 // тут должны быть размеры матриц, но уже все посчитано
-var sizes = new int[] {/*8, 16, 32, 64, 128, 256, 512, 1024*/};
-
+var sizes = new int[] {8, 16, 32, 64, 128, 256, 512, 1024};
 
 foreach (var size in sizes)
 {
@@ -49,16 +50,19 @@ foreach (var size in sizes)
     var varianceForStandardCalculations = Enumerable.Average(standardCalculations.Select(x => x * x)) - averageForStandardCalculations * averageForStandardCalculations;
     var varianceForParallelCalculations = Enumerable.Average(parallelCalculations.Select(x => x * x)) - averageForParallelCalculations * averageForParallelCalculations;
 
-    Console.WriteLine($"Average operation time of standart multiplication for a matrix of size {size} * {size} : {averageForStandardCalculations}");
-    Console.WriteLine($"Standard deviation operation time of standart multiplication for a matrix of size {size} * {size} : {Math.Sqrt(varianceForStandardCalculations)}");
+    Console.WriteLine($"Average operation time of standart multiplication for a matrix of size {size} * {size} : {Math.Round(averageForStandardCalculations, 3)}");
+    Console.WriteLine($"Standard deviation operation time of standart multiplication for a matrix of size {size} * {size} : {Math.Round(Math.Sqrt(varianceForStandardCalculations), 3)}");
     Console.WriteLine();
-    Console.WriteLine($"Average operation time of parallel multiplication for a matrix of size {size} * {size} : {averageForParallelCalculations}");
-    Console.WriteLine($"Standard deviation operation time of parallel multiplication for a matrix of size {size} * {size} : {Math.Sqrt(varianceForParallelCalculations)}");
+    Console.WriteLine($"Average operation time of parallel multiplication for a matrix of size {size} * {size} : {Math.Round(averageForParallelCalculations, 3)}");
+    Console.WriteLine($"Standard deviation operation time of parallel multiplication for a matrix of size {size} * {size} : {Math.Round(Math.Sqrt(varianceForParallelCalculations), 3)}");
     Console.WriteLine();
     Console.WriteLine();
     Console.WriteLine();
 
 }
+
+
+// PREVIOUS RESULTS------------------------------------------------------------------------------------
 
 /*
 Average operation time of standart multiplication for a matrix of size 8 * 8 : 0
