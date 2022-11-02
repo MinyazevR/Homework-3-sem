@@ -39,7 +39,7 @@ public class Tests
         Assert.Multiple(() =>
         {
             Assert.That(size, Is.EqualTo(newSize));
-            Assert.That(bytes, Is.EqualTo(newBytes));
+            Assert.That(bytes, Is.EquivalentTo(newBytes));
         });
     }
     

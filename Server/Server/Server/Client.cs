@@ -42,15 +42,18 @@ public class Client
         {
             throw new InvalidDataException();
         }
+
         var strings = data.Split(' ');
         if (!int.TryParse(strings[0], out int size))
         {
             throw new InvalidDataException();
         }
+
         if (size == -1)
         {
             throw new DirectoryNotFoundException();
         }
+
         var list = new List<(string, bool)>();
         for (int i = 1; i < strings.Length; i++)
         {
@@ -77,18 +80,21 @@ public class Client
         var client = new TcpClient();
         await client.ConnectAsync(address, port);
         using var stream = client.GetStream();
-        using var streamWriter = new StreamWriter(stream) { AutoFlush = true };
+        using var streamWriter = new StreamWriter(stream);
         await streamWriter.WriteLineAsync($"get {pathToFile}");
+        await streamWriter.FlushAsync();
         using var streamReader = new StreamReader(stream);
         var stringWithSize = (await streamReader.ReadLineAsync());
         if (!int.TryParse(stringWithSize, out int size))
         {
             throw new InvalidDataException();
         }
+
         if (size == -1)
         {
             throw new FileNotFoundException();
         }
+
         var buffer = new byte[size];
         await streamReader.BaseStream.ReadAsync(buffer, 0, size);
         return (size, buffer);
