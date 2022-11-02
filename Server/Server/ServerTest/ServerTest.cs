@@ -6,11 +6,11 @@ using Server;
 public class Tests
 {
     Server? server;
-    CancellationTokenSource? cancelTokenSource;
+
     [SetUp]
     public void Setup()
     {
-        server = new Server(IPAddress.Loopback, 80);
+        server = new Server(IPAddress.Loopback, 10000);
         var cancelTokenSource = new CancellationTokenSource();
         var serverTask = Task.Run(() => server.Start(cancelTokenSource), cancelTokenSource.Token);
     }
@@ -18,22 +18,22 @@ public class Tests
     [Test]
     public void ShouldExpectedDirectoryNotFoundExceptionIfListForNonExistentDirectory()
     {
-        var client = new Client(IPAddress.Loopback, 80);
+        var client = new Client(IPAddress.Loopback, 10000);
         Assert.ThrowsAsync<DirectoryNotFoundException>(() => client.List("./NonExistentDirectory"));
     }
 
     [Test]
     public void ShouldExpectedFileNotFoundExceptionIfGetForNonExistentFile()
     {
-        var client = new Client(IPAddress.Loopback, 80);
+        var client = new Client(IPAddress.Loopback, 10000);
         Assert.ThrowsAsync<FileNotFoundException>(() => client.Get("NonExistentFile.txt"));
     }
 
     [Test]
     public async Task ShouldExpectedResultsOfGetAreTheSameForDifferentClients()
     {
-        var client = new Client(IPAddress.Loopback, 80);
-        var newClient = new Client(IPAddress.Loopback, 80);
+        var client = new Client(IPAddress.Loopback, 10000);
+        var newClient = new Client(IPAddress.Loopback, 10000);
         var(size, bytes) = await client.Get("..//..//..//Files//azaza.txt");
         var(newSize, newBytes) = await newClient.Get("..//..//..//Files//azaza.txt");
         Assert.Multiple(() =>
@@ -46,9 +46,9 @@ public class Tests
     [Test]
     public void ShouldExpectedThatMultipleClientsCanAccessTheFile()
     {
-        var firstClient = new Client(IPAddress.Loopback, 80);
-        var secondClient = new Client(IPAddress.Loopback, 80);
-        var thirdClient = new Client(IPAddress.Loopback, 80);
+        var firstClient = new Client(IPAddress.Loopback, 10000);
+        var secondClient = new Client(IPAddress.Loopback, 10000);
+        var thirdClient = new Client(IPAddress.Loopback, 10000);
         var firstTask = Task.Run(() => firstClient.Get("..//..//..//Files//azaza.txt"));
         var secondTask = Task.Run(() => secondClient.Get("..//..//..//Files//azaza.txt"));
         var thirdTask = Task.Run(() => secondClient.Get("..//..//..//Files//azaza.txt"));
