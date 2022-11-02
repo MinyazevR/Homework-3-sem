@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-if (args.Length != 2)
+/*if (args.Length != 2)
 {
     Console.WriteLine("at the input, the program should receive two files");
     return;
@@ -9,7 +9,7 @@ if (args.Length != 2)
 var firstMatrix = MatrixMultiplication.Matrix.ReadMatrix(args[0]);
 var secondMatrix = MatrixMultiplication.Matrix.ReadMatrix(args[1]);
 var result = firstMatrix.Multiply(secondMatrix, new MatrixMultiplication.ParallelStrategy());
-result.PrintMatrix("result.txt");
+result.PrintMatrix("result.txt");*/
 
 static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 {
@@ -40,10 +40,10 @@ static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 }
 
 // тут должны быть размеры матриц, но уже все посчитано
-var sizes = new int[] {/*8, 16, 32, 64, 128, 256, 512, 1024*/};
+var sizes = new int[] {8, 16, 32, 64, 128, 256, 512, 1024};
 
-//using StreamWriter stream = new StreamWriter("Calculation.csv");
-//stream.Write("Size StandartAverage StandartDeviation ParallelAverage ParallelDeviation");
+using StreamWriter stream = new StreamWriter("Calculation.csv");
+stream.Write("Size StandartAverage StandartDeviation ParallelAverage ParallelDeviation");
 
 foreach (var size in sizes)
 {
@@ -52,8 +52,8 @@ foreach (var size in sizes)
     var averageForParallelCalculations = Enumerable.Average(parallelCalculations);
     var varianceForStandardCalculations = Enumerable.Average(standardCalculations.Select(x => x * x)) - averageForStandardCalculations * averageForStandardCalculations;
     var varianceForParallelCalculations = Enumerable.Average(parallelCalculations.Select(x => x * x)) - averageForParallelCalculations * averageForParallelCalculations;
-    //stream.WriteLine();
-    //stream.Write($"{size} {Math.Round(averageForStandardCalculations, 3)} {Math.Round(Math.Sqrt(varianceForStandardCalculations), 3)} {Math.Round(averageForParallelCalculations, 3)} {Math.Round(Math.Sqrt(varianceForParallelCalculations), 3)}");
+    stream.WriteLine();
+    stream.Write($"{size} {Math.Round(averageForStandardCalculations, 3)} {Math.Round(Math.Sqrt(varianceForStandardCalculations), 3)} {Math.Round(averageForParallelCalculations, 3)} {Math.Round(Math.Sqrt(varianceForParallelCalculations), 3)}");
     Console.WriteLine($"Average operation time of standart multiplication for a matrix of size {size} * {size} : {Math.Round(averageForStandardCalculations, 3)}");
     Console.WriteLine($"Standard deviation operation time of standart multiplication for a matrix of size {size} * {size} : {Math.Round(Math.Sqrt(varianceForStandardCalculations), 3)}");
     Console.WriteLine();
