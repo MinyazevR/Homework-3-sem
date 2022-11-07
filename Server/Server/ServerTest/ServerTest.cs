@@ -30,31 +30,17 @@ public class Tests
     }
 
     [Test]
-    public async Task ShouldExpectedResultsOfGetAreTheSameForDifferentClients()
-    {
-        var client = new Client(IPAddress.Loopback, 10000);
-        var newClient = new Client(IPAddress.Loopback, 10000);
-        var(size, bytes) = await client.Get("..//..//..//Files//azaza.txt");
-        var(newSize, newBytes) = await newClient.Get("..//..//..//Files//azaza.txt");
-        Assert.Multiple(() =>
-        {
-            Assert.That(size, Is.EqualTo(newSize));
-            Assert.That(bytes, Is.EquivalentTo(newBytes));
-        });
-    }
-    
-    [Test]
-    public void ShouldExpectedThatMultipleClientsCanAccessTheFile()
+    public async Task ShouldExpectedThatMultipleClientsCanAccessTheFile()
     {
         var firstClient = new Client(IPAddress.Loopback, 10000);
         var secondClient = new Client(IPAddress.Loopback, 10000);
         var thirdClient = new Client(IPAddress.Loopback, 10000);
-        var firstTask = Task.Run(() => firstClient.Get("..//..//..//Files//azaza.txt"));
-        var secondTask = Task.Run(() => secondClient.Get("..//..//..//Files//azaza.txt"));
-        var thirdTask = Task.Run(() => secondClient.Get("..//..//..//Files//azaza.txt"));
-        var (firstSize, firstBytes) = firstTask.Result;
-        var (secondSize, secondBytes) = secondTask.Result;
-        var (thirdSize, thirdBytes) = thirdTask.Result;
+        var firstTask = firstClient.Get("..//..//..//Files//azaza.txt");
+        var secondTask = secondClient.Get("..//..//..//Files//azaza.txt");
+        var thirdTask = thirdClient.Get("..//..//..//Files//azaza.txt");
+        var (firstSize, firstBytes) = await firstTask;
+        var (secondSize, secondBytes) = await secondTask;
+        var (thirdSize, thirdBytes) = await thirdTask;
         Assert.Multiple(() =>
         {
             Assert.That(firstSize, Is.EqualTo(secondSize));

@@ -35,6 +35,8 @@ public class Server
         if (!Directory.Exists(path))
         {
             await streamWriter.WriteAsync("-1");
+
+            // Посылаем ответ клиенту
             await streamWriter.FlushAsync();
             return;
         }
@@ -48,12 +50,16 @@ public class Server
         foreach (var file in files)
         {
             await streamWriter.WriteAsync($" {file} false");
+
+            // Посылаем ответ клиенту
             await streamWriter.FlushAsync();
         }
 
         foreach (var directory in directories)
         {
             await streamWriter.WriteAsync($" {directory} true");
+
+            // Посылаем ответ клиенту
             await streamWriter.FlushAsync();
         }
     }
@@ -70,6 +76,8 @@ public class Server
         if (!File.Exists(path))
         {
             await streamWriter.WriteAsync("-1");
+
+            // Посылаем ответ клиенту
             await streamWriter.FlushAsync();
             return;
         }
@@ -78,6 +86,8 @@ public class Server
         await streamWriter.FlushAsync();
         using var fileStream = new FileStream(path, FileMode.Open);
         await fileStream.CopyToAsync(streamWriter.BaseStream);
+
+        // Посылаем ответ клиенту
         await streamWriter.FlushAsync();
     }
 
@@ -88,35 +98,48 @@ public class Server
     public async Task Start(CancellationTokenSource source)
     {
         var tcpListener = new TcpListener(address, port);
+
+        // Слушаем порт
         tcpListener.Start();
 
         while (!source.Token.IsCancellationRequested)
         {
-            using var acceptedSocket = tcpListener.AcceptSocket();
-            using var newtworkStream = new NetworkStream(acceptedSocket);
-            using var streamReader = new StreamReader(newtworkStream);
-            var strings = (streamReader.ReadLine())?.Split(' ');
-            if (strings == null)
+            // Блокируем поток до установления соединения
+            var acceptedSocket = await tcpListener.AcceptSocketAsync();
+
+            // Каждый клиент обслуживается в своем потоке. Т.к. async, то не будет блокировок при чтении больших файлов
+            await Task.Run(async() =>
             {
-                continue;
-            }
-            switch (strings[0])
-            {
-                case "list":
+                // Поток для записи и чтения в полученный сокет
+                using var newtworkStream = new NetworkStream(acceptedSocket);
+
+                // Получаем сообщение от клиента
+                using var streamReader = new StreamReader(newtworkStream);
+                var strings = (streamReader.ReadLine())?.Split(' ');
+                if (strings == null)
                 {
-                    await Task.Run(() => List(newtworkStream, strings[1]));
-                    break;
+                    throw new InvalidDataException();
                 }
-                case "get":
+
+                switch (strings[0])
                 {
-                    await Task.Run(() => Get(newtworkStream, strings[1]));
-                    break;
+                    case "list":
+                        {
+                            await List(newtworkStream, strings[1]);
+                            break;
+                        }
+                    case "get":
+                        {
+                            await Get(newtworkStream, strings[1]);
+                            break;
+                        }
+                    default:
+                        {
+                            throw new InvalidDataException();
+                        }
                 }
-                default:
-                {
-                    continue;
-                }
-            }
+                acceptedSocket.Close();
+            });
         }
 
         tcpListener.Stop();

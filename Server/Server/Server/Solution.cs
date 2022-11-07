@@ -24,6 +24,12 @@ if (!int.TryParse(args[1], out int port))
     return;
 }
 
+if (port < 1024 || port > 65535)
+{
+    Console.WriteLine("incorrect port input");
+    return;
+}
+
 var server = new Server.Server(ip!, port);
 var cancelTokenSource = new CancellationTokenSource();
 var serverTask = Task.Run(() => server.Start(cancelTokenSource), cancelTokenSource.Token);

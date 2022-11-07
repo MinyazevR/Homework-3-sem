@@ -31,12 +31,22 @@ public class Client
     public async Task<(int, List<(string, bool)>)> List(string pathToDiretory)
     {
         var client = new TcpClient();
+
+        // Подключаемся к узлу
         await client.ConnectAsync(address, port);
+
+        // Получаем поток для записи и чтения
         using var stream = client.GetStream();
+
+        
         using var streamWriter = new StreamWriter(stream);
+
+        // Отправляем сообщение подключенному tcpсерверу.
         await streamWriter.WriteLineAsync($"list {pathToDiretory}");
         await streamWriter.FlushAsync();
         using var streamReader = new StreamReader(stream);
+
+        // Получаем ответ от сервера
         var data = await streamReader.ReadLineAsync();
         if (data == null)
         {
