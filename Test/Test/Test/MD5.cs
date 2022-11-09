@@ -25,12 +25,17 @@ public class MD5
     /// <exception cref="DirectoryNotFoundException"></exception>
     public static async Task<byte[]> SequentiallyComputeCheckSumForDirectory(string pathToDirectory)
     {
-        if(!Directory.Exists(pathToDirectory))
+        // Если директории не существует 
+
+        if (!Directory.Exists(pathToDirectory))
         {
             throw new DirectoryNotFoundException();
         }
-        
+
+        // Берем имена файлов
         var files = Directory.GetFiles(pathToDirectory);
+
+        // Имена директорий
         var directories = Directory.GetDirectories(pathToDirectory);
         var list = new List<(byte[], string)>();
 
@@ -44,11 +49,15 @@ public class MD5
             list.Add((await ComputeCheckSumForFile(file), file));
         }
         var directoryName = System.Text.Encoding.UTF8.GetBytes(Path.GetDirectoryName(pathToDirectory)!);
-        foreach(var (lol, elem) in list)
+
+        // Сортируем для одинакового порядка полученных файлов
+        list.Sort();
+
+        foreach (var (lol, bytes) in list)
         {
-            var result = new byte[elem.Length + lol.Length];
+            var result = new byte[bytes.Length + lol.Length];
             directoryName.CopyTo(result, 0);
-            lol.CopyTo(result, elem.Length);
+            lol.CopyTo(result, bytes.Length);
             directoryName = result;
         }
         var md5 = System.Security.Cryptography.MD5.Create();
@@ -78,20 +87,23 @@ public class MD5
         var list = new List<(byte[], string)>();
 
         // Изначально хотел сделать как в домашке с матрицами, а именно дать каждому изпотоков какое то количество файлов на обработку
-        // после просто Task.Run(() => {...}) и объединять Task.Result
+        // После просто Task.Run(() => {...}) и объединять Task.Result
         // Но так вроде выглядит проще
         Parallel.ForEach(directories, directory => list.Add((ParallelComputeCheckSumForDirectory(directory), directory)));
         Parallel.ForEach(files, file => list.Add((ParallelComputeCheckSumForDirectory(file), file)));
 
+        // Сортируем для одинакового порядка полученных файлов
         list.Sort();
+    
+        // Первым идет имя директории
         var directoryName = System.Text.Encoding.UTF8.GetBytes(Path.GetDirectoryName(pathToDirectory)!);
 
 
-        foreach (var (lol, elem) in list)
+        foreach (var (lol, bytes) in list)
         {
-            var result = new byte[elem.Length + lol.Length];
+            var result = new byte[bytes.Length + lol.Length];
             directoryName.CopyTo(result, 0);
-            lol.CopyTo(result, elem.Length);
+            lol.CopyTo(result, bytes.Length);
             directoryName = result;
         }
         var md5 = System.Security.Cryptography.MD5.Create();
