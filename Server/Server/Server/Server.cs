@@ -30,37 +30,28 @@ public class Server
     /// <returns></returns>
     private static async Task List(NetworkStream stream, string path)
     {
-        using var streamWriter = new StreamWriter(stream);
+        using var streamWriter = new StreamWriter(stream) { AutoFlush = true };
 
         if (!Directory.Exists(path))
         {
             await streamWriter.WriteAsync("-1");
-
-            // Посылаем ответ клиенту
-            await streamWriter.FlushAsync();
             return;
         }
 
         var directories = Directory.GetDirectories(path);
         var files = Directory.GetFiles(path);
         var size = directories.Length + files.Length;
+
         await streamWriter.WriteAsync(size.ToString());
-        await streamWriter.FlushAsync();
 
         foreach (var file in files)
         {
             await streamWriter.WriteAsync($" {file} false");
-
-            // Посылаем ответ клиенту
-            await streamWriter.FlushAsync();
         }
 
         foreach (var directory in directories)
         {
             await streamWriter.WriteAsync($" {directory} true");
-
-            // Посылаем ответ клиенту
-            await streamWriter.FlushAsync();
         }
     }
 
@@ -72,23 +63,17 @@ public class Server
     /// <returns></returns>
     private static async Task Get(NetworkStream stream, string path)
     {
-        using var streamWriter = new StreamWriter(stream);
+        using var streamWriter = new StreamWriter(stream) { AutoFlush = true };
         if (!File.Exists(path))
         {
             await streamWriter.WriteAsync("-1");
-
-            // Посылаем ответ клиенту
-            await streamWriter.FlushAsync();
             return;
         }
+
         var size = (new FileInfo(path)).Length;
         await streamWriter.WriteLineAsync(size.ToString());
-        await streamWriter.FlushAsync();
         using var fileStream = new FileStream(path, FileMode.Open);
         await fileStream.CopyToAsync(streamWriter.BaseStream);
-
-        // Посылаем ответ клиенту
-        await streamWriter.FlushAsync();
     }
 
     /// <summary>
@@ -124,20 +109,21 @@ public class Server
                 switch (strings[0])
                 {
                     case "list":
-                        {
-                            await List(newtworkStream, strings[1]);
-                            break;
-                        }
+                    {
+                        await List(newtworkStream, strings[1]);
+                        break;
+                    }
                     case "get":
-                        {
-                            await Get(newtworkStream, strings[1]);
-                            break;
-                        }
+                    {
+                        await Get(newtworkStream, strings[1]);
+                        break;
+                    }
                     default:
-                        {
-                            throw new InvalidDataException();
-                        }
+                    {
+                       throw new InvalidDataException();
+                    }
                 }
+
                 acceptedSocket.Close();
             });
         }

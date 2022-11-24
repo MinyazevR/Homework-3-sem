@@ -39,11 +39,10 @@ public class Client
         using var stream = client.GetStream();
 
         
-        using var streamWriter = new StreamWriter(stream);
+        using var streamWriter = new StreamWriter(stream) { AutoFlush = true };
 
         // Отправляем сообщение подключенному tcpсерверу.
         await streamWriter.WriteLineAsync($"list {pathToDiretory}");
-        await streamWriter.FlushAsync();
         using var streamReader = new StreamReader(stream);
 
         // Получаем ответ от сервера
@@ -67,11 +66,7 @@ public class Client
         var list = new List<(string, bool)>();
         for (int i = 1; i < strings.Length; i++)
         {
-            bool flag = true;
-            if (strings[i + 1] == "false")
-            {
-                flag = false;
-            }
+            bool flag = strings[i + 1] != "false";
             list.Add((strings[i], flag));
             i++;
         }
@@ -90,9 +85,8 @@ public class Client
         var client = new TcpClient();
         await client.ConnectAsync(address, port);
         using var stream = client.GetStream();
-        using var streamWriter = new StreamWriter(stream);
+        using var streamWriter = new StreamWriter(stream) { AutoFlush = true };
         await streamWriter.WriteLineAsync($"get {pathToFile}");
-        await streamWriter.FlushAsync();
         using var streamReader = new StreamReader(stream);
         var stringWithSize = (await streamReader.ReadLineAsync());
         if (!int.TryParse(stringWithSize, out int size))
