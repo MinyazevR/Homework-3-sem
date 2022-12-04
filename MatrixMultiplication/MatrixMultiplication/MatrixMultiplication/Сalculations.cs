@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using MatrixMultiplication;
 
 if (args.Length != 2)
 {
@@ -6,21 +7,21 @@ if (args.Length != 2)
     return;
 }
 
-var firstMatrix = MatrixMultiplication.Matrix.ReadMatrix(args[0]);
-var secondMatrix = MatrixMultiplication.Matrix.ReadMatrix(args[1]);
+var firstMatrix = Matrix.ReadMatrix(args[0]);
+var secondMatrix = Matrix.ReadMatrix(args[1]);
 var result = firstMatrix.Multiply(secondMatrix, new MatrixMultiplication.ParallelStrategy());
 result.PrintMatrix("result.txt");
 
 static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 {
-    var firstMatrix = MatrixMultiplication.Matrix.Generate(size, size);
-    var secondMatrix = MatrixMultiplication.Matrix.Generate(size, size);
+    var firstMatrix = Matrix.Generate(size, size);
+    var secondMatrix = Matrix.Generate(size, size);
     var stopWatch = new Stopwatch();
     var numberOfIterations = 100;
     var standardCalculations = new long[numberOfIterations];
     var parallelCalculations = new long[numberOfIterations];
-    var sequentialStrategy = new MatrixMultiplication.SequentialStrategy();
-    var parallelStrategy = new MatrixMultiplication.ParallelStrategy();
+    var sequentialStrategy = new SequentialStrategy();
+    var parallelStrategy = new ParallelStrategy();
     for (int i = 0; i < numberOfIterations; i++)
     {
         stopWatch.Reset();
@@ -43,7 +44,7 @@ static (IEnumerable<long>, IEnumerable<long>) Calculate(int size)
 var sizes = new int[] {/*8, 16, 32, 64, 128, 256, 512, 1024*/};
 
 //using StreamWriter stream = new StreamWriter("Calculation.csv");
-//stream.Write("Size StandartAverage StandartDeviation ParallelAverage ParallelDeviation");
+//stream.Write("Size standart_average StandartDeviation parallel_average ParallelDeviation");
 
 foreach (var size in sizes)
 {

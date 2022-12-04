@@ -1,5 +1,8 @@
 ﻿namespace MatrixMultiplication;
 
+/// <summary>
+/// Сlass representing a matrix
+/// </summary>
 public class Matrix
 {
     /// <summary>
@@ -16,7 +19,7 @@ public class Matrix
     static readonly Random random = new();
 
     /// <summary>
-    /// Indexer
+    /// Indexer that returns an element of the matrix according to the given coordinates
     /// </summary>
     /// <param name="i">row index</param>
     /// <param name="j">column index</param>
@@ -28,9 +31,9 @@ public class Matrix
     }
 
     /// <summary>
-    /// Two-dimensional array for matrix initialization
+    /// Constructor for matrix initialization
     /// </summary>
-    /// <param name="data"></param>
+    /// <param name="data">two-dimensional array for matrix initialization</param>
     public Matrix(int[,] data)
     {
         this.data = data;
@@ -47,85 +50,6 @@ public class Matrix
     public Matrix Multiply(Matrix matrix, IStrategy strategy)
     {
         return strategy.Multiply(this, matrix);
-    }
-
-    /// <summary>
-    /// Function for sequential matrix multiplication
-    /// </summary>
-    /// <param name="this">First matrix</param>
-    /// <param name="secondMatrix">Second matrix</param>
-    /// <returns>Result of multiplication</returns>
-    /// <exception cref="ArgumentException">When number of columns of the first matrix is not equal to the number of rows of the second</exception>
-    public Matrix SequentialMultiply(Matrix secondMatrix)
-    {
-        if (this.NumberOfCols != secondMatrix.NumberOfRows)
-        {
-            throw new ArgumentException("the number of columns of the first matrix is not equal to the number of rows of the second");
-        }
-
-        var result = new Matrix(new int[this.NumberOfRows, secondMatrix.NumberOfCols]);
-
-        for (int i = 0; i < this.NumberOfRows; i++)
-        {
-            for (int j = 0; j < secondMatrix.NumberOfCols; j++)
-            {
-                for (int k = 0; k < secondMatrix.NumberOfRows; k++)
-                {
-                    result[i, j] += this[i, k] * secondMatrix[k, j];
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /// <summary>
-    /// Function for parallel matrix multiplication
-    /// </summary>
-    /// <param name="firstMatrix">First matrix</param>
-    /// <param name="secondMatrix">Second matrix</param>
-    /// <returns>Result of multiplication</returns>
-    /// <exception cref="ArgumentException">When number of columns of the first matrix is not equal to the number of rows of the second</exception>
-    public Matrix ParallelMultiply(Matrix secondMatrix)
-    {
-        if (this.NumberOfCols != secondMatrix.NumberOfRows)
-        {
-            throw new ArgumentException("the number of columns of the first matrix is not equal to the number of rows of the second");
-        }
-
-        var result = new Matrix(new int[this.NumberOfRows, secondMatrix.NumberOfCols]);
-        var threads = new Thread[Math.Min(Environment.ProcessorCount, this.NumberOfRows)];
-        var chunkSize = this.NumberOfRows / threads.Length;
-
-        for (int i = 0; i < threads.Length; i++)
-        {
-            var locali = i;
-
-            threads[locali] = new Thread(() => {
-                for (int j = locali * chunkSize; j < Math.Min(chunkSize * (locali + 1), this.NumberOfRows); j++)
-                {
-                    for (int l = 0; l < secondMatrix.NumberOfCols; l++)
-                    {
-                        for (int k = 0; k < secondMatrix.NumberOfRows; k++)
-                        {
-                            result[j, l] += this[j, k] * secondMatrix[k, l];
-                        }
-                    }
-                }
-            });
-        }
-
-        foreach (var thread in threads)
-        {
-            thread.Start();
-        }
-
-        foreach (var thread in threads)
-        {
-            thread.Join();
-        }
-
-        return result;
     }
 
     /// <summary>
