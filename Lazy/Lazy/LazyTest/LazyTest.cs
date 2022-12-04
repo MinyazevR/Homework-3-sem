@@ -1,8 +1,7 @@
 namespace LazyTest;
 
-public class Tests
+public class LazyTests
 {
-
     private static IEnumerable<TestCaseData> CaseData()
     {
         var values = new List<int> { 0, -1, 1 };

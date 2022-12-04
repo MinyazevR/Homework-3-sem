@@ -17,7 +17,7 @@ public class SingleThreadedLazy<T> : Lazy<T>
         if (!isAlreadyCounted)
         {
             isAlreadyCounted = true;
-            value = func() ?? throw new ArgumentNullException();
+            value = func();
         }
 
         return value!;

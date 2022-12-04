@@ -31,7 +31,7 @@ public class MultithreadedLazy<T> : Lazy<T>
                 /// if the value was not calculated
                 if (!Volatile.Read(ref isAlreadyCounted))
                 {
-                    value = func() ?? throw new ArgumentNullException(nameof(Func<T>));
+                    value = func();
                     isAlreadyCounted = true;
                     Volatile.Write(ref isAlreadyCounted, true);
                 }

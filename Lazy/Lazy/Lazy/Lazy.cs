@@ -16,7 +16,7 @@ public abstract class Lazy<T> : ILazy<T>
     /// <exception cref="ArgumentNullException">If func is null</exception>
     public Lazy(Func<T> func)
     {
-        this.func = func ?? throw new ArgumentNullException(nameof(Func<T>));
+        this.func = func;
     }
 
     /// <summary>
