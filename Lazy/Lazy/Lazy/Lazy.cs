@@ -13,7 +13,6 @@ public abstract class Lazy<T> : ILazy<T>
     /// Сonstructor
     /// </summary>
     /// <param name="func">The object on the basis of which the calculation is performed</param>
-    /// <exception cref="ArgumentNullException">If func is null</exception>
     public Lazy(Func<T> func)
     {
         this.func = func;
