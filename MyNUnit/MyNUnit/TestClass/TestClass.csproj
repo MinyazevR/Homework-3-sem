@@ -8,9 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Reference Include="MyAttributes">
-      <HintPath>..\MyAttributes\bin\Debug\net6.0\MyAttributes.dll</HintPath>
-    </Reference>
+    <ProjectReference Include="..\MyAttributes\MyAttributes.csproj" />
   </ItemGroup>
 
 </Project>
