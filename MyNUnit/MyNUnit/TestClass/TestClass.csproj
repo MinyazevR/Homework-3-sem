@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <Reference Include="MyAttributes">
-      <HintPath>..\MyNUnit\bin\Debug\net6.0\MyAttributes.dll</HintPath>
+      <HintPath>..\MyAttributes\bin\Debug\net6.0\MyAttributes.dll</HintPath>
     </Reference>
   </ItemGroup>
 
