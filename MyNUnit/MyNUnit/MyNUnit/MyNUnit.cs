@@ -35,11 +35,11 @@ public class MyNUnit
         {
             if (testAttribute.Expected == null)
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: null, but was: {ex.InnerException!.Message}"));
+                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: null, but was: {ex.InnerException!.GetType()}"));
             }
             else if (testAttribute.Expected != ex.InnerException!.GetType())
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: {ex.InnerException!.Message}"));
+                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: {ex.InnerException!.GetType()}"));
             }
             else
             {
