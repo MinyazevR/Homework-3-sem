@@ -30,7 +30,7 @@ public class LazyTests
     [Test]
     public void ShouldValueNotChangeForLazyInMultithreadedMode()
     {
-        static int Increment(int number) => number + 1;
+        static int Increment(int number) => Interlocked.Increment(ref number);
         Lazy.ILazy<int> lazy = new Lazy.MultithreadedLazy<int>(() => Increment(0));
         var threads = new Thread[8];
 
