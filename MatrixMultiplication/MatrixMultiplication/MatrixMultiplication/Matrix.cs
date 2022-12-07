@@ -16,7 +16,7 @@ public class Matrix
     public int NumberOfCols { get; private set; }
 
     private readonly int[,] data;
-    static readonly Random random = new();
+    private static readonly Random random = new();
 
     /// <summary>
     /// Indexer that returns an element of the matrix according to the given coordinates
