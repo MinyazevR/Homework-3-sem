@@ -10,5 +10,5 @@ public interface ILazy<T>
     /// Function that calls the calculation and returns the result
     /// </summary>
     /// <returns>Returns the result of the called function</returns>
-    T Get();
+    T? Get();
 }

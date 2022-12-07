@@ -32,13 +32,11 @@ public class LazyTests
     {
         static int Increment(int number) => number + 1;
         Lazy.ILazy<int> lazy = new Lazy.MultithreadedLazy<int>(() => Increment(0));
-        Thread[] threads = new Thread[8];
+        var threads = new Thread[8];
 
         for (int i = 0; i < 8; i++)
         {
-            threads[i] = new Thread(() => {
-                Assert.That(lazy.Get(), Is.EqualTo(1));
-            });
+            threads[i] = new Thread(() => Assert.That(lazy.Get(), Is.EqualTo(1)));
         }
 
         foreach (var thread in threads)

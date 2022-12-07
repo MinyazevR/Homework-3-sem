@@ -12,14 +12,19 @@ public class SingleThreadedLazy<T> : Lazy<T>
     private bool isAlreadyCounted;
 
     /// <inheritdoc/>
-    public override T Get()
+    public override T? Get()
     {
         if (!isAlreadyCounted)
         {
-            isAlreadyCounted = true;
+            if (func == null)
+            {
+                throw new InvalidOperationException();
+            }
+
             value = func();
+            isAlreadyCounted = true;
         }
 
-        return value!;
+        return value;
     }
 }

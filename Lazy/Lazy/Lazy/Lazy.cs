@@ -6,7 +6,7 @@
 /// <typeparam name="T">Element type</typeparam>
 public abstract class Lazy<T> : ILazy<T>
 {
-    protected Func<T> func;
+    protected Func<T>? func;
     protected T? value;
 
     /// <summary>
@@ -22,6 +22,6 @@ public abstract class Lazy<T> : ILazy<T>
     /// Function that calls a calculation and returns results
     /// </summary>
     /// <returns>Element type</returns>
-    public abstract T Get();
+    public abstract T? Get();
 }
 

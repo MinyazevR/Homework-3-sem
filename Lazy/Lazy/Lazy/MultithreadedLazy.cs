@@ -14,30 +14,35 @@ public class MultithreadedLazy<T> : Lazy<T>
     /// <summary>
     /// Lock
     /// </summary>
-    private readonly Object lockObject = new();
+    private readonly object lockObject = new();
 
     /// <inheritdoc/>
     public MultithreadedLazy(Func<T> func) : base(func) { }
 
     /// <inheritdoc/>
-    public override T Get()
+    public override T? Get()
     {
-        ///if the value has already been calculated, there should be no locks
+        // if the value has already been calculated, there should be no locks
         if (!Volatile.Read(ref isAlreadyCounted))
         {
-            ///lock
+            // lock
             lock (lockObject)
             {
-                /// if the value was not calculated
+                // if the value was not calculated
                 if (!Volatile.Read(ref isAlreadyCounted))
                 {
+                    if (func == null)
+                    {
+                        throw new InvalidOperationException();
+                    }
+
                     value = func();
-                    isAlreadyCounted = true;
+                    func = null;
                     Volatile.Write(ref isAlreadyCounted, true);
                 }
             }
         }
 
-        return value!;
+        return value;
     }
 }
