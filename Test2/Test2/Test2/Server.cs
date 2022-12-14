@@ -63,7 +63,7 @@ public class Server
 
             if (source.IsCancellationRequested)
             {
-                return;
+                break;
             }
         }
 
@@ -80,7 +80,7 @@ public class Server
             await streamWriter.WriteLineAsync($"{data}");
 
             if (source.IsCancellationRequested) {
-                return;
+                break;
             }
         }
 

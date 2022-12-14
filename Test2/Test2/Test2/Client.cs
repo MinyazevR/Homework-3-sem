@@ -36,7 +36,7 @@ public class Client
 
             if (source.IsCancellationRequested)
             {
-                return;
+                break;
             }
         }
 
@@ -54,7 +54,7 @@ public class Client
 
             if (source.IsCancellationRequested)
             {
-                return;
+                break;
             }
         }
 
