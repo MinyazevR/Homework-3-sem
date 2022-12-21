@@ -15,6 +15,7 @@ public class TestInfo : IEquatable<TestInfo>
     public TestStatus Status { get; }
     public string? IgnoreReason { get; }
     public string? ErrorMessage { get; }
+    public long Time { get; }
 
     /// <summary>
     /// Constructor
@@ -23,12 +24,13 @@ public class TestInfo : IEquatable<TestInfo>
     /// <param name="status">Test status</param>
     /// <param name="ignoreReason">Ignore reason</param>
     /// <param name="errorMessage">Error message</param>
-    public TestInfo(string name, TestStatus status, string? ignoreReason, string? errorMessage)
+    public TestInfo(string name, TestStatus status, string? ignoreReason, string? errorMessage, long time)
     {
         Name = name;
         Status = status;
         IgnoreReason = ignoreReason;
         ErrorMessage = errorMessage;
+        Time = time;
     }
 
     public override bool Equals(object? obj)
@@ -54,6 +56,7 @@ public class TestInfo : IEquatable<TestInfo>
             return false;
         }
 
+        // Все свойства равны (кроме времени, так как один и тот же тест не пройдет за одно и тоже время)
         return Name == other.Name && Status == other.Status && IgnoreReason == other.IgnoreReason && ErrorMessage == other.ErrorMessage;
     }
 

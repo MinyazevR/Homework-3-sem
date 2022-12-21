@@ -1,5 +1,6 @@
 ﻿namespace MyNUnit;
 
+using System.Diagnostics;
 using MyAttributes;
 using System.Reflection;
 using System.Collections.Concurrent;
@@ -19,43 +20,49 @@ public class MyNUnit
         var testAttribute = (TestAttribute)(methodInfo.GetCustomAttribute(typeof(TestAttribute))!);
         if (testAttribute.Ignore != null)
         {
-            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Skipped, testAttribute.Ignore, null));
+            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Skipped, testAttribute.Ignore, null, 0));
             return;
         }
 
         Start<BeforeAttribute>(listOfMethodInfo);
 
         var typeObject = Activator.CreateInstance(methodInfo.DeclaringType!);
+        var stopWatch = new Stopwatch();
 
         try
         {
+            stopWatch.Start();
             methodInfo.Invoke(typeObject, null);
+            stopWatch.Stop();
         }
         catch (Exception ex)
         {
+            stopWatch.Stop();
             if (testAttribute.Expected == null)
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: null, but was: {ex.InnerException!.GetType()}"));
+                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: null, but was: {ex.InnerException!.GetType()}", stopWatch.ElapsedMilliseconds));
             }
             else if (testAttribute.Expected != ex.InnerException!.GetType())
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: {ex.InnerException!.GetType()}"));
+                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: {ex.InnerException!.GetType()}", stopWatch.ElapsedMilliseconds));
             }
             else
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Passed, null, null));
+                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Passed, null, null, stopWatch.ElapsedMilliseconds));
             }
 
             Start<AfterAttribute>(listOfMethodInfo);
+
             return;
         }
 
         if (testAttribute.Expected != null) {
-            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: null"));
+            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: null", stopWatch.ElapsedMilliseconds));
         }
         else {
-            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Passed, null, null));
+            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Passed, null, null, stopWatch.ElapsedMilliseconds));
         }
+
         Start<AfterAttribute>(listOfMethodInfo);
     }
 
@@ -106,8 +113,10 @@ public class MyNUnit
         foreach(var typeInfo in typeInfos) {
             Console.WriteLine();
             Console.WriteLine($"Name: {typeInfo.Name}");
-            Console.WriteLine($"     Status :{typeInfo.Status}");
-            Console.WriteLine($"     Error message :{typeInfo.ErrorMessage}");
+            Console.WriteLine($"     Status: {typeInfo.Status}");
+            Console.WriteLine($"     Error message: {typeInfo.ErrorMessage}");
+            Console.WriteLine($"     Ignore reason: {typeInfo.IgnoreReason}");
+            Console.WriteLine($"     Time: {typeInfo.Time} ms");
         }
     }
 }
