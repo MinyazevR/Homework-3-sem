@@ -12,6 +12,7 @@ public class TestInfo : IEquatable<TestInfo>
     }
 
     public string Name { get; }
+    public string AssemblyName { get; }
     public TestStatus Status { get; }
     public string? IgnoreReason { get; }
     public string? ErrorMessage { get; }
@@ -24,13 +25,14 @@ public class TestInfo : IEquatable<TestInfo>
     /// <param name="status">Test status</param>
     /// <param name="ignoreReason">Ignore reason</param>
     /// <param name="errorMessage">Error message</param>
-    public TestInfo(string name, TestStatus status, string? ignoreReason, string? errorMessage, long time)
+    public TestInfo(string assemblyName, string name, TestStatus status, string? ignoreReason, string? errorMessage, long time)
     {
         Name = name;
         Status = status;
         IgnoreReason = ignoreReason;
         ErrorMessage = errorMessage;
         Time = time;
+        AssemblyName = assemblyName;
     }
 
     public override bool Equals(object? obj)

@@ -16,11 +16,11 @@ public class MyNUnit
     private static void TestAttributeExecute((MethodInfo, IEnumerable<MethodInfo>) methodInfoPair)
     {
         var (methodInfo, listOfMethodInfo) = methodInfoPair;
-
+        var assemblyName = methodInfo.DeclaringType!.Assembly.GetName();
         var testAttribute = (TestAttribute)(methodInfo.GetCustomAttribute(typeof(TestAttribute))!);
         if (testAttribute.Ignore != null)
         {
-            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Skipped, testAttribute.Ignore, null, 0));
+            typeInfos.Add(new TestInfo(assemblyName.Name!, methodInfo.Name, TestInfo.TestStatus.Skipped, testAttribute.Ignore, null, 0));
             return;
         }
 
@@ -40,15 +40,15 @@ public class MyNUnit
             stopWatch.Stop();
             if (testAttribute.Expected == null)
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: null, but was: {ex.InnerException!.GetType()}", stopWatch.ElapsedMilliseconds));
+                typeInfos.Add(new TestInfo(assemblyName.Name!, methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: null, but was: {ex.InnerException!.GetType()}", stopWatch.ElapsedMilliseconds));
             }
             else if (testAttribute.Expected != ex.InnerException!.GetType())
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: {ex.InnerException!.GetType()}", stopWatch.ElapsedMilliseconds));
+                typeInfos.Add(new TestInfo(assemblyName.Name!, methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: {ex.InnerException!.GetType()}", stopWatch.ElapsedMilliseconds));
             }
             else
             {
-                typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Passed, null, null, stopWatch.ElapsedMilliseconds));
+                typeInfos.Add(new TestInfo(assemblyName.Name!, methodInfo.Name, TestInfo.TestStatus.Passed, null, null, stopWatch.ElapsedMilliseconds));
             }
 
             Start<AfterAttribute>(listOfMethodInfo);
@@ -57,10 +57,10 @@ public class MyNUnit
         }
 
         if (testAttribute.Expected != null) {
-            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: null", stopWatch.ElapsedMilliseconds));
+            typeInfos.Add(new TestInfo(assemblyName.Name!, methodInfo.Name, TestInfo.TestStatus.Failed, null, $"Expected: {testAttribute.Expected}, but was: null", stopWatch.ElapsedMilliseconds));
         }
         else {
-            typeInfos.Add(new TestInfo(methodInfo.Name, TestInfo.TestStatus.Passed, null, null, stopWatch.ElapsedMilliseconds));
+            typeInfos.Add(new TestInfo(assemblyName.Name!, methodInfo.Name, TestInfo.TestStatus.Passed, null, null, stopWatch.ElapsedMilliseconds));
         }
 
         Start<AfterAttribute>(listOfMethodInfo);
@@ -122,11 +122,12 @@ public class MyNUnit
     {
         foreach(var typeInfo in typeInfos) {
             Console.WriteLine();
-            Console.WriteLine($"Name: {typeInfo.Name}");
-            Console.WriteLine($"     Status: {typeInfo.Status}");
-            Console.WriteLine($"     Error message: {typeInfo.ErrorMessage}");
-            Console.WriteLine($"     Ignore reason: {typeInfo.IgnoreReason}");
-            Console.WriteLine($"     Time: {typeInfo.Time} ms");
+            Console.WriteLine($"AsseblyName: {typeInfo.AssemblyName}");
+            Console.WriteLine($"    Name: {typeInfo.Name}");
+            Console.WriteLine($"        Status: {typeInfo.Status}");
+            Console.WriteLine($"        Error message: {typeInfo.ErrorMessage}");
+            Console.WriteLine($"        Ignore reason: {typeInfo.IgnoreReason}");
+            Console.WriteLine($"        Time: {typeInfo.Time} ms");
         }
     }
 }
