@@ -108,6 +108,16 @@ public class MyNUnit
         Parallel.ForEach(types, classType => ParallelTestExecuteForEachType(classType));
     }
 
+    /// <summary>
+    /// Method for running tests
+    /// </summary>
+    /// <param name="pathToDirectory">Path to directory containing .dll files</param>
+    public static void RunForFiles(IEnumerable<string> files)
+    {
+        var types = files.Select(fileName => Assembly.LoadFrom(fileName)).SelectMany(assembly => assembly.ExportedTypes);
+        Parallel.ForEach(types, classType => ParallelTestExecuteForEachType(classType));
+    }
+
     public static void OutputInformationAboutTheTests()
     {
         foreach(var typeInfo in typeInfos) {
