@@ -1,0 +1,60 @@
+﻿@page
+@model MyNUnitWeb.Pages.HistoryModel
+@addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+
+@{
+    ViewData["Title"] = "Launch";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+<form class="row row-cols-lg-auto g-3 align-items-center" asp-page-handler="Run" method="post" enctype="multipart/form-data">
+    <div class="col-12">
+         <input type="file" class="form-control" asp-for="FileUpload" multiple>
+    </div>
+
+    <div class="col-12">
+        <button type="submit" class="btn btn-primary">Начать тестирование</button>
+    </div>
+</form>
+
+@foreach (var file in Model.FileUpload)
+{
+    <h4>@file.FileName</h4>
+    var lol = Model.infos.Where(i => i.AssemblyName == file.FileName); 
+    <table class="table">
+    <tr>
+        <th>All:</th>
+        <th>Passed:</th>
+        <th>Failed:</th>
+        <th>Ignored:</th>
+     </tr>
+    <tbody>
+        <tr>
+            <td>@lol.Count()</td>
+            <td>@lol.Where(i => i.Status == MyNUnit.TestInfo.TestStatus.Passed).Count()</td>
+            <td>@lol.Where(i => i.Status == MyNUnit.TestInfo.TestStatus.Failed).Count()</td>
+            <td>@lol.Where(i => i.Status == MyNUnit.TestInfo.TestStatus.Skipped).Count()</td>
+        </tr>
+    </tbody>
+    </table>
+
+    <table class="table">
+        <tr>
+            <th>Name:</th>
+            <th>Status:</th>
+            <th>Execution time:</th>
+            <th>Ignore reason:</th>
+        </tr>
+       <tbody>
+       @foreach(var j in lol) {
+        <tr>
+                <td>@j.Name</td>
+                <td>@j.Status</td>
+                <td>@j.Time</td>
+                <td>@j.IgnoreReason</td>
+        </tr>
+       }
+       </tbody>
+    </table>
+}
